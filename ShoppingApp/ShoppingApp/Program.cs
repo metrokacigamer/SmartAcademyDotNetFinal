@@ -36,6 +36,7 @@ namespace ShoppingApp
 			var app = builder.Build();
 
 			await Seed.SeedRolesAsync(app);
+			await Seed.SeedAdminAsync(app);
 
 			// Configure the HTTP request pipeline.
 			if (!app.Environment.IsDevelopment())

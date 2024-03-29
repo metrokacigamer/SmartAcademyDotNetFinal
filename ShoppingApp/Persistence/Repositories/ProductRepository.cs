@@ -18,11 +18,13 @@ namespace Persistence.Repositories
         public void Create(Product entity)
 		{
 			_products.Add(entity);
+			_context.SaveChanges();
 		}
 
 		public void Delete(Product entity)
 		{
 			_products.Remove(entity);
+			_context.SaveChanges();
 		}
 
 		public async Task<IEnumerable<Product>> GetAllAsync()
@@ -38,6 +40,7 @@ namespace Persistence.Repositories
 		public void Update(Product entity)
 		{
 			_products.Update(entity);
+			_context.SaveChanges();
 		}
 	}
 }

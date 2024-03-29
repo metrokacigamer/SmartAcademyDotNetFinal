@@ -7,19 +7,19 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShoppingApp", "ShoppingApp\
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{B5589703-A5AC-4DB3-A56C-F7A17809395B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "Domain\Domain.csproj", "{11F8A2D3-2217-435A-8192-DC7A07D3185F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domain", "Domain\Domain.csproj", "{11F8A2D3-2217-435A-8192-DC7A07D3185F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared", "Shared\Shared.csproj", "{F06ABC4D-7027-4622-B521-A51D80C0D33E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shared", "Shared\Shared.csproj", "{F06ABC4D-7027-4622-B521-A51D80C0D33E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Service.Abstactions", "Service.Abstactions\Service.Abstactions.csproj", "{6D36F39E-3748-4D21-9391-0D09897BF2C9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Service.Abstactions", "Service.Abstactions\Service.Abstactions.csproj", "{6D36F39E-3748-4D21-9391-0D09897BF2C9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Services", "Services\Services.csproj", "{BE30E1A8-BFCC-4A3C-9D57-8AB06BB1AA1B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Services", "Services\Services.csproj", "{BE30E1A8-BFCC-4A3C-9D57-8AB06BB1AA1B}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{8BD0FEA2-D2AD-4A4E-BA9E-BDFE6D7B146E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Persistence", "Persistence\Persistence.csproj", "{C0A963C6-044B-4198-8DA3-0E2B1195299B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Persistence", "Persistence\Persistence.csproj", "{C0A963C6-044B-4198-8DA3-0E2B1195299B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Presentation", "Presentation\Presentation.csproj", "{EF1C9919-6F13-43B5-85CE-D52B91A0F945}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Presentation", "Presentation\Presentation.csproj", "{EF1C9919-6F13-43B5-85CE-D52B91A0F945}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

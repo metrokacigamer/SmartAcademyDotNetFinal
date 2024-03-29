@@ -1,17 +1,20 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
-using Shared.Models;
 using Microsoft.Extensions.Logging;
+using Shared.Models;
+using Service.Abstactions;
 
-namespace ShoppingApp.Controllers
+namespace Presentation.Controllers
 {
 	public class HomeController : Controller
 	{
 		private readonly ILogger<HomeController> _logger;
+		private readonly IServiceManager _serviceManager;
 
-		public HomeController(ILogger<HomeController> logger)
+		public HomeController(ILogger<HomeController> logger, IServiceManager serviceManager)
 		{
 			_logger = logger;
+			_serviceManager = serviceManager;
 		}
 
 		public IActionResult Index()

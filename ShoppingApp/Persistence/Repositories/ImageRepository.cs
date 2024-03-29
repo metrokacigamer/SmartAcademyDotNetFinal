@@ -19,11 +19,13 @@ namespace Persistence.Repositories
 		public void Create(Image entity)
 		{
 			_images.Add(entity);
+			_context.SaveChanges();
 		}
 
 		public void Delete(Image entity)
 		{
 			_images.Remove(entity);
+			_context.SaveChanges();
 		}
 
 		public async Task<IEnumerable<Image>> GetAllAsync()
@@ -39,6 +41,7 @@ namespace Persistence.Repositories
 		public void Update(Image entity)
 		{
 			_images.Update(entity);
+			_context.SaveChanges();
 		}
 	}
 }
