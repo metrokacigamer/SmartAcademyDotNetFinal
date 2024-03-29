@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
-using ShoppingApp.Models;
 using System.Diagnostics;
+using Shared.Models;
+using Microsoft.Extensions.Logging;
 
 namespace ShoppingApp.Controllers
 {

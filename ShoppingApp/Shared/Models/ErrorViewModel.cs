@@ -1,4 +1,4 @@
-namespace ShoppingApp.Models
+namespace Shared.Models
 {
 	public class ErrorViewModel
 	{
