@@ -72,13 +72,13 @@ namespace services
 			return !emailTaken && !nameTaken;
 		}
 
-		public async Task<UserSettingsViewModel> GetUserSettingsViewModel(string userId)
+		public async Task<UserSettingsViewModel> GetUserSettingsViewModel(string userId, string actionName)
 		{
 			var user = await _userManager.FindByIdAsync(userId);
 			return new UserSettingsViewModel
 			{
 				UserName = user!.UserName!,
-				ActionName = "Change Username",
+				ActionName = actionName,
 				Email = user.Email!,
 				Id = user.Id,
 			};
@@ -102,6 +102,39 @@ namespace services
 		public async Task LogOut()
 		{
 			await _signInManager.SignOutAsync();
+		}
+
+		public async Task<bool> CheckUserName(string newUserName)
+		{
+			return (await _userManager.FindByNameAsync(newUserName)) != null;
+		}
+
+		public async Task<IdentityResult> UpdateUsername(ChangeUserNameViewModel model)
+		{
+			var user = await _userManager.FindByIdAsync(model.Id);
+			user!.UserName = model.NewUserName;
+
+			return await _userManager.UpdateAsync(user);
+		}
+
+		public async Task<IdentityResult> UpdatePassword(ChangePasswordViewModel model)
+		{
+			var user = await GetById(model.Id);
+
+			return await _userManager.ChangePasswordAsync(user, model.Password, model.NewPassword);
+		}
+
+		public async Task<IdentityResult> UpdateEmail(EmailConfirmationViewModel<ChangeEmailViewModel> model)
+		{
+			var user = await GetById(model.Model.Id);
+			var token = await _userManager.GenerateChangeEmailTokenAsync(user, model.Model.NewEmail);
+
+			return await _userManager.ChangeEmailAsync(user, model.Model.NewEmail, token);
+		}
+
+		public async Task<bool> CheckEmail(string newEmail)
+		{
+			return (await _userManager.FindByEmailAsync(newEmail)) != null;
 		}
 	}
 }

@@ -7,5 +7,6 @@
 		IImageService ImageService { get; }
 		ICartService CartService { get; }
 		IItemService ItemService { get; }
+		IEmailSenderService EmailSenderService { get; }
 	}
 }
