@@ -15,6 +15,14 @@ namespace Presentation.Controllers
 			_serviceManager = serviceManager;
 		}
 
+		[HttpGet]
+		public async Task<IActionResult> GetProduct(string productId)
+		{
+			var productVM = await _serviceManager.ProductService.GetProductViewModel(productId);
+			productVM.Images = await _serviceManager.ImageService.GetImageViewModels(productId);
+			return View(productVM);
+		}
+
 		[Authorize(Roles = "Admin")]
 		[HttpGet]
 		public IActionResult AddProduct()
@@ -24,7 +32,7 @@ namespace Presentation.Controllers
 
 		[Authorize(Roles = "Admin")]
 		[HttpPost]
-		public async Task<IActionResult> AddProduct(AddProductViewModel model, params IFormFile[] images)
+		public async Task<IActionResult> AddProduct(AddProductViewModel model)
 		{
 			if(ModelState.IsValid)
 			{
@@ -33,6 +41,40 @@ namespace Presentation.Controllers
 				return RedirectToAction("Index", "Home");
 			}
 			return View(model);
+		}
+
+		[Authorize(Roles = "Admin")]
+		[HttpGet]
+		public async Task<IActionResult> EditProduct(string productId)
+		{
+			var editProductVM = await _serviceManager.ProductService.GetEditProductViewModel(productId);
+			editProductVM.Images = await _serviceManager.ImageService.GetImageViewModels(productId);
+			return View(editProductVM);
+		}
+
+		[Authorize(Roles = "Admin")]
+		[HttpPost]
+		public IActionResult EditProduct(EditProductViewModel model)
+		{
+			if(ModelState.IsValid)
+			{
+				_serviceManager.ProductService.UpdateProduct(model);
+				if(model.RemovedImageIds.Any() || model.NewImages.Any())
+				{
+					_serviceManager.ImageService.UpdateProductImages(model);
+				}
+
+				return RedirectToAction("GetProduct", "Product", new {productId = model.Id});
+			}
+			return View(model);
+		}
+
+		[Authorize(Roles = "Admin")]
+		[HttpPost]
+		public IActionResult DeleteProduct(string productId)
+		{
+			_serviceManager.ProductService.DeleteProduct(productId);
+			return RedirectToAction("Index", "Home");
 		}
 	}
 }

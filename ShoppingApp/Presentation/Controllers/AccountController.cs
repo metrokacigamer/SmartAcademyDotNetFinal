@@ -74,5 +74,14 @@ namespace Presentation.Controllers
 
 			return View(userSettingsViewModel);
 		}
+
+		[Authorize]
+		[HttpGet]
+		public async Task<IActionResult> LogOut()
+		{
+			await _serviceManager.AccountService.LogOut();
+
+			return RedirectToAction("Index", "Home");
+		}
 	}
 }

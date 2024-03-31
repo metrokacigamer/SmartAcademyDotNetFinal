@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Service.Abstactions;
 using Domain.Entities;
-using Services;
+using services;
 using Domain.Repositories;
 using Persistence.Repositories;
 using Persistence;
@@ -22,16 +22,8 @@ namespace ShoppingApp
 				x.UseSqlServer(builder.Configuration.GetConnectionString("ConString"))
 				.UseLazyLoadingProxies();
 				});
-			builder.Services.AddIdentity<AppUser, IdentityRole>(options =>
-			{
-				options.Password.RequiredLength = 8;
-			})
-			.AddEntityFrameworkStores<ShoppingAppDbContext>()
-			.AddDefaultTokenProviders();
 
-			builder.Services.AddTransient<ExceptionHandlingMiddleware>();
-			builder.Services.AddScoped<IServiceManager, ServiceManager>();
-			builder.Services.AddScoped<IRepositoryManager, RepositoryManager>();
+			builder.Services.ConfigureServices();
 
 			var app = builder.Build();
 
@@ -47,6 +39,7 @@ namespace ShoppingApp
 			}
 
 			app.UseMiddleware<ExceptionHandlingMiddleware>();
+			app.UseSession();
 
 			app.UseHttpsRedirection();
 			app.UseStaticFiles();

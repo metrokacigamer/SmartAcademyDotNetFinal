@@ -15,24 +15,12 @@ namespace Persistence.Repositories
             _productRepository = new ProductRepository(context);
         }
 
-        public IRepository<Cart> CartRepository()
-		{
-			return _cartRepository;
-		}
+		public IRepository<Cart> CartRepository => _cartRepository;
 
-		public IRepository<Image> ImageRepository()
-		{
-			return _imageRepository;
-		}
+		public IRepository<Image> ImageRepository => _imageRepository;
 
-		public IRepository<Item> ItemRepository()
-		{
-			return _itemRepository;
-		}
+		public IRepository<Item> ItemRepository => _itemRepository;
 
-		public IRepository<Product> ProductRepository()
-		{
-			return _productRepository;
-		}
+		public IRepository<Product> ProductRepository => _productRepository;
 	}
 }

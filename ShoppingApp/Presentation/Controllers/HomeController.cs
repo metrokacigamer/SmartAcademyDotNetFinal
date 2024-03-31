@@ -17,8 +17,36 @@ namespace Presentation.Controllers
 			_serviceManager = serviceManager;
 		}
 
-		public IActionResult Index()
+		public async Task<IActionResult> Index(string searchString = "", int currentPage = 0, int pageSize = 5)
 		{
+			var productVMs = await _serviceManager.ProductService.GetProductsViewModels(searchString, currentPage, pageSize);
+			foreach (var productVM in productVMs)
+			{
+				productVM.Images = await _serviceManager.ImageService.GetImageViewModels(productVM.Id);
+			}
+			ViewData["CurrentPage"] = currentPage;
+			ViewData["PageSize"] = pageSize;
+
+			return View(productVMs);
+		}
+
+		[HttpGet]
+		public IActionResult Filter()//Category, Price range, searchString
+		{
+			return View();
+		}
+
+		[HttpPost]
+		public async Task<IActionResult> Filter(FilterViewModel model)
+		{
+			var vm = await _serviceManager.ProductService.Filter(model);
+			return View(vm);
+		}
+
+		[HttpGet]
+		public IActionResult FilteredPage()
+		{
+
 			return View();
 		}
 

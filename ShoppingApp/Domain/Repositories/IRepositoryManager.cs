@@ -4,9 +4,9 @@ namespace Domain.Repositories
 {
 	public interface IRepositoryManager
 	{
-		IRepository<Product> ProductRepository();
-		IRepository<Item> ItemRepository();
-		IRepository<Cart> CartRepository();
-		IRepository<Image> ImageRepository();
+		IRepository<Product> ProductRepository { get; }
+		IRepository<Item> ItemRepository { get; }
+		IRepository<Cart> CartRepository { get; }
+		IRepository<Image> ImageRepository { get; }
 	}
 }

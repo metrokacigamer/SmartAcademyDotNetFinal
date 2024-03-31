@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Domain.Exceptions;
 using Shared.Models;
 
-namespace Services
+namespace services
 {
 	internal class AccountService : IAccountService
 	{
@@ -82,6 +82,26 @@ namespace Services
 				Email = user.Email!,
 				Id = user.Id,
 			};
+		}
+
+		public string GetCurrentUserId(ClaimsPrincipal User)
+		{
+			return User.FindFirst(ClaimTypes.NameIdentifier).Value;
+		}
+
+		public bool RequestIsAuthenticated(string id, ClaimsPrincipal User)
+		{
+			return id == GetCurrentUserId(User);
+		}
+
+		public async Task<AppUser> GetById(string id)
+		{
+			return await _userManager.FindByIdAsync(id);
+		}
+
+		public async Task LogOut()
+		{
+			await _signInManager.SignOutAsync();
 		}
 	}
 }
