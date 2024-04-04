@@ -3,9 +3,9 @@ using Domain.Repositories;
 using Domain.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Http;
-using Domain.Wrappers;
+using Services;
 
-namespace Services
+namespace services
 {
 	public class ServiceManager : IServiceManager
 	{
@@ -20,17 +20,14 @@ namespace Services
 								UserManager<AppUser> userManager,
 								RoleManager<IdentityRole> roleManager,
 								SignInManager<AppUser> signInManager,
-								ISessionWrapper sessionWrapper,
-								ISmtpClientWrapper smtpClientWrapper, 
-								IFileStreamWrapper formFileWrapper
-								)
+								IHttpContextAccessor httpContextAccessor)
 		{
 			_accountService = new AccountService(repositoryManager, userManager, roleManager, signInManager);
 			_productService = new ProductService(repositoryManager);
-			_imageService = new ImageService(repositoryManager, formFileWrapper);
-			_cartService = new CartService(repositoryManager, sessionWrapper);
+			_imageService = new ImageService(repositoryManager);
+			_cartService = new CartService(repositoryManager, httpContextAccessor);
 			_itemService = new ItemService(repositoryManager);
-			_emailSenderService = new EmailSenderService(sessionWrapper, repositoryManager, smtpClientWrapper);
+			_emailSenderService = new EmailSenderService(httpContextAccessor, repositoryManager);
 		}
 
 		public IAccountService AccountService => _accountService;

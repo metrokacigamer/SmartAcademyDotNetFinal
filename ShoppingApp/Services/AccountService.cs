@@ -5,9 +5,8 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Identity;
 using Domain.Exceptions;
 using Shared.Models;
-using System.Text.Json;
 
-namespace Services
+namespace services
 {
 	internal class AccountService : IAccountService
 	{
@@ -40,36 +39,37 @@ namespace Services
 			}
 		}
 
-		public async Task RegisterAsync(RegisterViewModel model)
+		public async Task<IdentityResult> RegisterAsync(RegisterViewModel model)
 		{
-			await SuchAccountExists(model);
-
-			var user = new AppUser
+			var suchAccountExists = SuchAccountExists(model);
+			if (!suchAccountExists)
 			{
-				UserName = model.UserName,
-				Email = model.Email
-			};
-			var result = await _userManager.CreateAsync(user, model.Password);
+				var user = new AppUser
+				{
+					UserName = model.UserName,
+					Email = model.Email
+				};
+				var result = await _userManager.CreateAsync(user, model.Password);
 
-			if (result.Succeeded)
-			{
-				await _userManager.AddToRoleAsync(user, "Guest");
-				await _signInManager.SignInAsync(user, false);
+				if (result.Succeeded)
+				{
+					await _userManager.AddToRoleAsync(user, "Guest");
+					await _signInManager.SignInAsync(user, false);
+				}
+
+				return result;
 			}
 			else
 			{
-				throw new RegisterFailedException(result);
+				throw new UsernameOrEmailTakenException();// implement this
 			}
 		}
 
-		private async Task SuchAccountExists(RegisterViewModel model)
+		private bool SuchAccountExists(RegisterViewModel model)
 		{
-			var emailTaken = await CheckEmail(model.Email);
-			var nameTaken = await CheckUserName(model.UserName);
-			if (emailTaken || nameTaken)
-			{
-				throw new UsernameOrEmailTakenException();// implement this
-			}
+			var emailTaken = _userManager.FindByEmailAsync(model.Email) != null;
+			var nameTaken = _userManager.FindByNameAsync(model.UserName) != null;
+			return !emailTaken && !nameTaken;
 		}
 
 		public async Task<UserSettingsViewModel> GetUserSettingsViewModel(string userId, string actionName)

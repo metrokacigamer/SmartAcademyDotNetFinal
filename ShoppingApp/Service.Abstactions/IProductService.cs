@@ -11,7 +11,7 @@ namespace Service.Abstactions
 	public interface IProductService
 	{
 		Task<Product> AddProduct(AddProductViewModel model);
-		void AdjustQuantity(IEnumerable<Item> items);
+		void AdjustQuantity(IEnumerable<Item>? items);
 		Task<FilteredPageViewModel> Filter(FilterViewModel model);
 		Task<IEnumerable<ProductViewModel>> GetProductsViewModels(string searchString, int currentPage, int pageSize);
 		Task<EditProductViewModel> GetEditProductViewModel(string productId);

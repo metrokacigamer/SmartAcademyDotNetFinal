@@ -1,7 +1,4 @@
-﻿using Domain.Exceptions;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Controllers;
-using Presentation.Controllers;
+﻿using Presentation.Controllers;
 
 namespace ShoppingApp
 {
@@ -30,30 +27,9 @@ namespace ShoppingApp
 		{
 			switch (ex)
 			{
-				case ProductExistsException:
-					{
-						var ModelState = context.Features.Get<ModelStateFeature>()?.ModelState;
-						ModelState.AddModelError("", "Product with the same name already exists.");
-
-						context.Response.Redirect("/Product/AddProduct");
-						break;
-					}
-				case RegisterFailedException:
-					{
-						var _ex = ex as RegisterFailedException;
-						var ModelState = context.Features.Get<ModelStateFeature>()?.ModelState;
-
-						foreach(var error in _ex.Result.Errors)
-						{
-							ModelState.AddModelError(string.Empty, error.Description);
-						}
-						context.Response.Redirect("/Account/Register");
-
-						break;
-					}
 				default:
 					{
-						_serviceProvider.GetService<HomeController>().Error(ex);
+						_serviceProvider.GetService<HomeController>().Error();
 						break;
 					}
 			}

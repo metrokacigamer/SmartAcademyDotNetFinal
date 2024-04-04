@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Service.Abstactions;
 using Domain.Entities;
-using Services;
+using services;
 using Domain.Repositories;
 using Persistence.Repositories;
 using Persistence;
@@ -21,7 +21,7 @@ namespace ShoppingApp
 			builder.Services.AddDbContext<ShoppingAppDbContext>(x => {
 				x.UseSqlServer(builder.Configuration.GetConnectionString("ConString"))
 				.UseLazyLoadingProxies();
-			});
+				});
 
 			builder.Services.ConfigureServices();
 
