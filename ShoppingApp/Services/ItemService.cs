@@ -2,11 +2,6 @@
 using Domain.Repositories;
 using Service.Abstactions;
 using Shared.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Services
 {
@@ -19,16 +14,12 @@ namespace Services
 			_repositoryManager = repositoryManager;
 		}
 
-		public async Task<IEnumerable<Item>> GetItems(string cartId)
-		{
-			return (await _repositoryManager.CartRepository.GetByIdAsync(cartId)).Items;
-		}
-
 		public void BuyUserCartItems(IEnumerable<Item>? items)
 		{
 			foreach(var item in items)
 			{
-				_repositoryManager.ItemRepository.Delete(item);
+				RemoveItem(item.Id);
+				//_repositoryManager.ItemRepository.Delete(item);
 			}
 		}
 
@@ -40,11 +31,13 @@ namespace Services
 				itemVMs.Add(new ItemViewModel
 				{
 					Id = item.Id,
+					ProductId = item.ProductId,
 					Description = item.Product.Description,
 					Name = item.Product.Name,
 					Price = item.Product.Price,
 					Quantity = (item.Product.QuantityInStock > item.Quantity) ? item.Quantity : item.Product.QuantityInStock,
 					ImagePaths = item.Product.Images.Select(x => x.ImagePath),
+					Category = item.Product.Category,
 				});
 			}
 
