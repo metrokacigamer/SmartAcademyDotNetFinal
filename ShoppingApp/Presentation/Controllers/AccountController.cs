@@ -48,7 +48,7 @@ namespace Presentation.Controllers
 		{
 			if(ModelState.IsValid)
 			{
-				var confirmationModel = _serviceManager.EmailSenderService.SendRegisterConfirmationEmail(model);
+				var confirmationModel = await _serviceManager.EmailSenderService.SendRegisterConfirmationEmail(model);
 				var modelJson = JsonSerializer.Serialize(confirmationModel);
 				
 				return RedirectToAction("EmailValidation", "Account", new { modelJson = new string(modelJson)});
@@ -70,13 +70,7 @@ namespace Presentation.Controllers
 			{
 				if(model.EnteredKey == model.Key)
 				{
-					var result = await _serviceManager.AccountService.RegisterAsync(model.Model);
-					if (!result.Succeeded)
-					{
-						AddErrors(result.Errors.Select(x => x.Description));
-
-						return RedirectToAction("Register", "Account");
-					}
+					await _serviceManager.AccountService.RegisterAsync(model.Model);
 				}
 				else
 				{
@@ -130,7 +124,7 @@ namespace Presentation.Controllers
 				var nameExists = await _serviceManager.AccountService.CheckUserName(model.NewUserName);
 				if (!nameExists)
 				{
-					var confirmationModel = _serviceManager.EmailSenderService.SendNameChangeConfirmationEmail(model);
+					var confirmationModel = await _serviceManager.EmailSenderService.SendNameChangeConfirmationEmail(model);
 					var modelJson = JsonSerializer.Serialize(confirmationModel);
 
 					return RedirectToAction("NameChangeValidation", "Account", new {modelJson = new string(modelJson) });
@@ -240,7 +234,7 @@ namespace Presentation.Controllers
 					var emailTaken = await _serviceManager.AccountService.CheckEmail(model.NewEmail);
 					if (!emailTaken)
 					{
-						var confirmationModel = _serviceManager.EmailSenderService.SendEmailRemovalConfirmationEmail(model);
+						var confirmationModel = await _serviceManager.EmailSenderService.SendEmailRemovalConfirmationEmail(model);
 						var modelJson = JsonSerializer.Serialize(confirmationModel);
 
 						return RedirectToAction("EmailRemovalValidation", "Account", new { modelJson = new string(modelJson) });
@@ -269,11 +263,11 @@ namespace Presentation.Controllers
 
 		[Authorize]
 		[HttpPost]
-		public IActionResult EmailRemovalValidation(EmailConfirmationViewModel<ChangeEmailViewModel> model)
+		public async Task<IActionResult> EmailRemovalValidation(EmailConfirmationViewModel<ChangeEmailViewModel> model)
 		{
 			if(model.Key == model.EnteredKey)
 			{
-				var confirmationModel = _serviceManager.EmailSenderService.SendEmailChangeConfirmationEmail(model.Model);
+				var confirmationModel = await _serviceManager.EmailSenderService.SendEmailChangeConfirmationEmail(model.Model);
 				var modelJson = JsonSerializer.Serialize(confirmationModel);
 
 				return RedirectToAction("EmailChangeValidation", "Account", new { modelJson = new string(modelJson) });

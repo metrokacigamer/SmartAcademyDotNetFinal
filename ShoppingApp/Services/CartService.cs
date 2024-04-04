@@ -1,29 +1,29 @@
 ﻿using Domain.Entities;
 using Domain.Repositories;
+using Domain.Wrappers;
 using Microsoft.AspNetCore.Http;
 using Service.Abstactions;
 using System.Text;
 using System.Text.Json;
 
 
-namespace services
+namespace Services
 {
 	internal class CartService : ICartService
 	{
 		private readonly IRepositoryManager _repositoryManager;
-		private readonly IHttpContextAccessor _httpContextAccessor;
+		private readonly ISessionWrapper _session;
 		private readonly string _key = "cartKey";
 
-		public CartService(IRepositoryManager repositoryManager, IHttpContextAccessor httpContextAccessor)
+		public CartService(IRepositoryManager repositoryManager, ISessionWrapper session)
 		{
 			_repositoryManager = repositoryManager;
-			_httpContextAccessor = httpContextAccessor;
+			_session = session;
 		}
 
 		public async Task<Cart> GetCart()
 		{
-			var session = _httpContextAccessor.HttpContext.Session;
-			var cartJson = session.GetString(_key);
+			var cartJson = _session.GetString(_key);
 			if (cartJson == null)
 			{
 				return new Cart
@@ -58,7 +58,8 @@ namespace services
 
 			if (cart.Items.Any(x => x.ProductId == productId))
 			{
-				var item = UpdateQuantity(cart, product, quantity);
+				var item = cart.Items.First(x => x.ProductId == productId);
+				item = UpdateQuantity(cart, product, quantity + item.Quantity);
 				_repositoryManager.ItemRepository.Update(item);
 			}
 			else
@@ -99,13 +100,13 @@ namespace services
 
 			var cart = await GetCart();
 
-			if (cart.Items.Any(x => x.ProductId == productId))
+			if (cart.Items!.Any(x => x.ProductId == productId))
 			{
 				UpdateQuantity(cart, product, quantity);
 			}
 			else
 			{
-				cart.Items.Append(new Item
+				cart.Items!.Append(new Item
 				{
 					Product = await _repositoryManager.ProductRepository.GetByIdAsync(productId),
 					ProductId = product.Id,
@@ -114,14 +115,14 @@ namespace services
 					Quantity = quantity,
 				});
 			}
+
 			SaveCart(cart);
 		}
 
 		public void SaveCart(Cart cart)
 		{
-			var session = _httpContextAccessor.HttpContext.Session;
 			var cartString = JsonSerializer.Serialize(cart);
-			session.SetString(_key, cartString);
+			_session.SetString(_key, cartString);
 		}
 
 		public async Task<IEnumerable<Item>> BuyGuestCart()

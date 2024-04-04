@@ -4,9 +4,8 @@ using Domain.Entities;
 using Service.Abstactions;
 using Shared.Models;
 using Domain.Enums;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
-namespace services
+namespace Services
 {
 	internal class ProductService : IProductService
 	{
@@ -36,7 +35,7 @@ namespace services
 			return product;
 		}
 
-		public void AdjustQuantity(IEnumerable<Item>? items)
+		public void AdjustQuantity(IEnumerable<Item> items)
 		{
 			foreach (var item in items)
 			{
@@ -44,7 +43,6 @@ namespace services
 				product.QuantityInStock -= product.QuantityInStock > item.Quantity ? item.Quantity : product.QuantityInStock;
 				_repositoryManager.ProductRepository.Update(product);
 			}
-			throw new NotImplementedException();
 		}
 
 		public async Task<Product> GetById(string id)
@@ -102,16 +100,16 @@ namespace services
 
 		public async Task<FilteredPageViewModel> Filter(FilterViewModel model)
 		{
-			var productVMs = (await _repositoryManager.ProductRepository.GetAllAsync())
-			.Where(product =>
+			var products = (await _repositoryManager.ProductRepository.GetAllAsync());
+			var filterProducts = products.Where(product =>
 			{
 				bool priceFilter = PriceFilter(model, product);
 				bool searchStringFilter = SearchStringFilter(model, product);
 				bool categoryFilter = CategoryFilter(model, product);
 
 				return priceFilter && searchStringFilter && categoryFilter;
-			})
-			.Select(x => MapToProductViewModel(x));
+			});
+			var productVMs = filterProducts.Select(x => MapToProductViewModel(x));
 
 			return new FilteredPageViewModel
 			{
@@ -135,7 +133,7 @@ namespace services
 
 		private bool PriceFilter(FilterViewModel model, Product product)
 		{
-			if (model.PriceLowerBound != default && model.PriceUpperBound != default)
+			if (model.PriceLowerBound != default && model.PriceUpperBound != default && model.PriceLowerBound < model.PriceUpperBound)
 			{
 				return product.Price >= model.PriceLowerBound && 
 						product.Price <= model.PriceUpperBound;

@@ -1,66 +1,77 @@
 ﻿using Domain.Entities;
+using Domain.Exceptions;
 using Domain.Repositories;
+using Domain.Wrappers;
 using Microsoft.AspNetCore.Http;
 using Service.Abstactions;
 using Shared.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace services
+
+namespace Services
 {
-	internal class ImageService: IImageService
+	internal class ImageService : IImageService
 	{
 		private readonly IRepositoryManager _repositoryManager;
+		private readonly IFileStreamWrapper _fileStream;
 
-		public ImageService(IRepositoryManager repositoryManager)
-        {
+		public ImageService(IRepositoryManager repositoryManager, IFileStreamWrapper fileStream)
+		{
 			_repositoryManager = repositoryManager;
+			_fileStream = fileStream;
 		}
 
 		public async Task AddImages(IEnumerable<IFormFile> productImages, Product product)
 		{
 			foreach (var imageFile in productImages)
 			{
-				var fileExtension = Path.GetExtension(imageFile.FileName).ToLower();
+				CheckFile(imageFile);
 
-				if (imageFile != null && imageFile.Length > 0 && !(fileExtension != ".jpg" && fileExtension != ".jpeg" && fileExtension != ".png"))
+				var fileName = Guid.NewGuid().ToString() + Path.GetExtension(imageFile.FileName);
+				var imagePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", fileName);
+				var relativePath = $@"~/images/{fileName}";
+
+				await _fileStream.CopyToAsync(imageFile, imagePath);
+
+				var image = new Image
 				{
-					var fileName = Guid.NewGuid().ToString() + Path.GetExtension(imageFile.FileName);
-					var imagePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", fileName);
-					var relativePath = $@"~/images/{fileName}";
+					Product = product,
+					ImagePath = relativePath,
+				};
 
-					using (var stream = new FileStream(imagePath, FileMode.Create))
-					{
-						await imageFile.CopyToAsync(stream);
-					}
+				_repositoryManager.ImageRepository.Create(image);
 
-					var image = new Image
-					{
-						Product = product,
-						ImagePath = relativePath,
-					};
-
-					_repositoryManager.ImageRepository.Create(image);
-				}
 			}
 		}
 
+		public void CheckFile(IFormFile imageFile)
+		{
+			if (imageFile == null)
+			{
+				throw new InvalidFileTypeException(message: "No file attached");
+			}
+			var fileExtension = Path.GetExtension(imageFile.FileName).ToLower();
+
+			if (fileExtension != ".jpg" && fileExtension != ".jpeg" && fileExtension != ".png")
+			{
+				throw new InvalidFileTypeException(extension: fileExtension);
+			}
+		}
+		
+
 		public async Task UpdateProductImages(EditProductViewModel model)
 		{
-			if(model.NewImages.Any())
+			if (model.NewImages!.Any())
 			{
 				var product = await _repositoryManager.ProductRepository.GetByIdAsync(model.Id);
 				await AddImages(model.NewImages, product);
 			}
 
-			if(model.RemovedImageIds.Any())
+			if (model.RemovedImageIds.Any())
 			{
-				foreach(var imageId in model.RemovedImageIds)
+				foreach (var imageId in model.RemovedImageIds)
 				{
-					var image = await _repositoryManager.ImageRepository.GetByIdAsync(imageId);
+					var product = await _repositoryManager.ProductRepository.GetByIdAsync(model.Id);
+					var image = product.Images.First(x => x.Id == imageId);
 					_repositoryManager.ImageRepository.Delete(image);
 				}
 			}
@@ -71,7 +82,7 @@ namespace services
 			var imageVMs = new List<ImageViewModel>();
 			var product = await _repositoryManager.ProductRepository.GetByIdAsync(productId);
 
-			foreach(var image in product.Images)
+			foreach (var image in product.Images)
 			{
 				imageVMs.Add(new ImageViewModel
 				{
