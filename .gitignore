@@ -364,3 +364,4 @@ FodyWeavers.xsd
 /ShoppingApp/ShoppingApp/wwwroot/images/*
 /ShoppingApp/Services/EmailSenderService.cs
 /ShoppingApp/ShoppingApp/appsettings.json
+/ShoppingApp/ReadMe.txt
