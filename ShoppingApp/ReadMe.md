@@ -69,7 +69,7 @@ The application is a Shopping website project written in ASP.NET Core MVC, utili
 
 ## Search, Filter, Sort, and Paging
 
-- Search for products by name, description, or category.
+- Search for products by name or description.
 - Filter products by name, description, category, or price.
 - Sorting options: by ascending price, category, or name.
 - Paging is implemented for search and filtering.
