@@ -14,16 +14,15 @@ namespace Services
 			_repositoryManager = repositoryManager;
 		}
 
-		public void BuyUserCartItems(IEnumerable<Item>? items)
+		public async Task BuyUserCartItems(IEnumerable<Item>? items)//tested
 		{
 			foreach(var item in items)
 			{
-				RemoveItem(item.Id);
-				//_repositoryManager.ItemRepository.Delete(item);
+				await RemoveItem(item.Id);
 			}
 		}
 
-		public IEnumerable<ItemViewModel> GetItemViewModels(IEnumerable<Item> items)
+		public IEnumerable<ItemViewModel> GetItemViewModels(IEnumerable<Item> items)//tested
 		{
 			var itemVMs = new List<ItemViewModel>();
 			foreach(var item in items)
@@ -44,7 +43,7 @@ namespace Services
 			return itemVMs;
 		}
 
-		public async Task RemoveItem(string itemId)
+		public async Task RemoveItem(string itemId)//tested
 		{
 			var item = await _repositoryManager.ItemRepository.GetByIdAsync(itemId);
 			_repositoryManager.ItemRepository.Delete(item);

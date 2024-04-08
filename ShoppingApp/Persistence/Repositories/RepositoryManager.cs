@@ -13,9 +13,12 @@ namespace Persistence.Repositories
 		public RepositoryManager(ShoppingAppDbContext context)
         {
             _productRepository = new ProductRepository(context);
+            _itemRepository = new ItemRepository(context);
+            _cartRepository = new CartRepository(context);
+            _imageRepository = new ImageRepository(context);
         }
 
-		public IRepository<Cart> CartRepository => _cartRepository;
+        public IRepository<Cart> CartRepository => _cartRepository;
 
 		public IRepository<Image> ImageRepository => _imageRepository;
 

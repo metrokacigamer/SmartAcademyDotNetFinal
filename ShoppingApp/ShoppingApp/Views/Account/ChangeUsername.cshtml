@@ -1,0 +1,14 @@
+﻿@model ChangeUserNameViewModel
+
+<form asp-action="ChangeUsername" asp-controller="Account">
+	<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+	<input type="hidden" asp-for="Id" value="@Model.Id" />
+	<input type="hidden" asp-for="Email" value="@Model.Email" />
+	<div class="form-group mb-1">
+		<label asp-for="NewUserName">New Username: </label>
+		<input asp-for="NewUserName" class="form-control" />
+		<span asp-validation-for="NewUserName" class="text-danger"></span>
+	</div>
+
+	<button type="submit">Change Username</button>
+</form>

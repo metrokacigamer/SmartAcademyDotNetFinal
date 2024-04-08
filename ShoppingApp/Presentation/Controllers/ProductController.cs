@@ -37,8 +37,13 @@ namespace Presentation.Controllers
 			if(ModelState.IsValid)
 			{
 				var product = await _serviceManager.ProductService.AddProduct(model);
-				await _serviceManager.ImageService.AddImages(model.ProductImages, product);
-				return RedirectToAction("Index", "Home");
+
+				if(model.ProductImages != null)
+				{
+					await _serviceManager.ImageService.AddImages(model.ProductImages, product);
+				}
+
+				return RedirectToAction("GetProduct", "Product", new { productId = product.Id});
 			}
 			return View(model);
 		}
@@ -54,14 +59,14 @@ namespace Presentation.Controllers
 
 		[Authorize(Roles = "Admin")]
 		[HttpPost]
-		public IActionResult EditProduct(EditProductViewModel model)
+		public async Task<IActionResult> EditProduct(EditProductViewModel model)
 		{
 			if(ModelState.IsValid)
 			{
-				_serviceManager.ProductService.UpdateProduct(model);
-				if(model.RemovedImageIds.Any() || model.NewImages.Any())
+				await _serviceManager.ProductService.UpdateProduct(model);
+				if(model.RemovedImageIds != null || model.NewImages != null)
 				{
-					_serviceManager.ImageService.UpdateProductImages(model);
+					await _serviceManager.ImageService.UpdateProductImages(model);
 				}
 
 				return RedirectToAction("GetProduct", "Product", new {productId = model.Id});
@@ -71,9 +76,9 @@ namespace Presentation.Controllers
 
 		[Authorize(Roles = "Admin")]
 		[HttpPost]
-		public IActionResult DeleteProduct(string productId)
+		public async Task<IActionResult> DeleteProduct(string productId)
 		{
-			_serviceManager.ProductService.DeleteProduct(productId);
+			await _serviceManager.ProductService.DeleteProduct(productId);
 			return RedirectToAction("Index", "Home");
 		}
 	}

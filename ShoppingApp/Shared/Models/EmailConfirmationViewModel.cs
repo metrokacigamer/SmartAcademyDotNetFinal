@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿
+using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace Shared.Models
 {
@@ -13,6 +11,7 @@ namespace Shared.Models
 
         [Required]
         public string EnteredKey { get; set; }
+		[FromQuery]
 		public T Model { get; set; }
 	}
 }

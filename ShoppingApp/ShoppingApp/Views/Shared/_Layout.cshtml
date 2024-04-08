@@ -25,6 +25,29 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
+                        @if (!User.Identity.IsAuthenticated)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Login">Log in</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Register">Register</a>
+                            </li>
+                        }
+                        <li class="nav-item">
+                            <form asp-controller="Home" asp-action="Index" method="get">
+                                <input type="text" name="searchString" />
+                                <button type="submit">search</button>
+                            </form>
+                        </li>
+                        <li class="nav-item">
+                            <a asp-action="Filter" asp-controller="Home">Go To Advanced Search</a>
+                        </li>
+                        @Html.Partial("_AdminPartial")
+                        <li>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Cart" asp-action="GetCartItems">Cart</a>
+                        </li>
+                        @Html.Partial("_AccountPartial")
                     </ul>
                 </div>
             </div>

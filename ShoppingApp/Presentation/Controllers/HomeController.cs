@@ -3,6 +3,7 @@ using System.Diagnostics;
 using Microsoft.Extensions.Logging;
 using Shared.Models;
 using Service.Abstactions;
+using System.Text.Json;
 
 namespace Presentation.Controllers
 {
@@ -17,37 +18,56 @@ namespace Presentation.Controllers
 			_serviceManager = serviceManager;
 		}
 
-		public async Task<IActionResult> Index(string searchString = "", int currentPage = 0, int pageSize = 5)
+		[HttpGet]
+		public async Task<IActionResult> Index(string searchString = "", int currentPage = 0, int pageSize = 5, string sortBy = "Price", bool ascending = false)
 		{
 			var productVMs = await _serviceManager.ProductService.GetProductsViewModels(searchString, currentPage, pageSize);
+			productVMs = await _serviceManager.ProductService.SortBy(productVMs, sortBy, ascending);
+
 			foreach (var productVM in productVMs)
 			{
 				productVM.Images = await _serviceManager.ImageService.GetImageViewModels(productVM.Id);
 			}
 			ViewData["CurrentPage"] = currentPage;
-			ViewData["PageSize"] = pageSize;
+			ViewData["TotalPages"] = await _serviceManager.ProductService.GetTotalPages(new FilterViewModel
+			{
+				SearchString = searchString,
+			}, pageSize);
+			ViewData["SearchString"] = searchString;
+			ViewData["SortBy"] = sortBy;
+			ViewData["Ascending"] = ascending;
 
 			return View(productVMs);
 		}
 
 		[HttpGet]
-		public IActionResult Filter()//Category, Price range, searchString
+		public IActionResult Filter()
 		{
 			return View();
 		}
 
 		[HttpPost]
-		public async Task<IActionResult> Filter(FilterViewModel model)
+		public async Task<IActionResult> Filter(FilterViewModel model, int currentPage = 0, int pageSize = 5)
 		{
-			var vm = await _serviceManager.ProductService.Filter(model);
-			return View(vm);
+			var filterModel = await _serviceManager.ProductService.Filter(model, currentPage, pageSize);
+			filterModel.ProductViewModels = await _serviceManager.ProductService.SortBy(
+														filterModel.ProductViewModels,
+														filterModel.Filter.SortBy,
+														filterModel.Filter.Ascending);
+			var modelJson = JsonSerializer.Serialize(filterModel);
+
+			return RedirectToAction("FilteredPage", "Home", new { modelJson = new string(modelJson), currentPage = currentPage, pageSize = pageSize });
 		}
 
 		[HttpGet]
-		public IActionResult FilteredPage()
+		public async Task<IActionResult> FilteredPage(string modelJson, int currentPage, int pageSize)
 		{
+			var model = JsonSerializer.Deserialize<FilteredPageViewModel>(modelJson);
 
-			return View();
+			ViewData["CurrentPage"] = currentPage;
+			ViewData["TotalPages"] = await _serviceManager.ProductService.GetTotalPages(model.Filter, pageSize);
+			ViewData["PageSize"] = pageSize;
+			return View(model);
 		}
 
 		public IActionResult Privacy()

@@ -51,9 +51,33 @@ namespace ShoppingApp
 
 						break;
 					}
+				case UserNotFoundException:
+					{
+                        var _ex = ex as UserNotFoundException;
+                        var ModelState = context.Features.Get<ModelStateFeature>()?.ModelState;
+
+                        ModelState.AddModelError(string.Empty, _ex.Message);
+
+                        context.Response.Redirect("/Account/Login");
+                        break;
+					}
+				case LoginFailedException:
+					{
+						var _ex = ex as LoginFailedException;
+						var ModelState = context.Features.Get<ModelStateFeature>()?.ModelState;
+
+						ModelState.AddModelError(string.Empty, _ex.Message);
+
+						context.Response.Redirect("/Account/Login");
+						break;
+					}
 				default:
 					{
-						_serviceProvider.GetService<HomeController>().Error(ex);
+						//var controller = (HomeController)_serviceProvider.GetService(typeof(HomeController));
+						//var result = controller.Error(ex);
+						//await result.ExecuteResultAsync(new ActionContext { HttpContext = context });
+						context.Response.Redirect("/Home/Error");
+
 						break;
 					}
 			}

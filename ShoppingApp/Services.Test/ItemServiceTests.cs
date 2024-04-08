@@ -44,7 +44,7 @@ namespace Services.Tests
 			_cartRepositoryMock.Setup(x => x.GetByIdAsync(It.IsAny<string>())).ReturnsAsync(cart);
 
 			//Act
-			_itemService.BuyUserCartItems(items);
+			await _itemService.BuyUserCartItems(items);
 
 			//Assert
 			_itemRepositoryMock.Verify(x => x.Delete(It.IsAny<Item>()), Times.Exactly(4));

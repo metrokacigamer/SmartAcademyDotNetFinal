@@ -7,6 +7,8 @@ using Domain.Repositories;
 using Persistence.Repositories;
 using Persistence;
 using Presentation;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
+using Microsoft.Extensions.Options;
 
 namespace ShoppingApp
 {
@@ -17,7 +19,11 @@ namespace ShoppingApp
 			var builder = WebApplication.CreateBuilder(args);
 
 			// Add services to the container.
-			builder.Services.AddControllersWithViews().AddApplicationPart(typeof(AssemblyReference).Assembly);
+			builder.Services.AddControllersWithViews(options =>
+					{
+						options.ModelBinderProviders.Insert(0, new EmailConfirmationViewModelBinderProvider());
+					})
+					.AddApplicationPart(typeof(AssemblyReference).Assembly);
 			builder.Services.AddDbContext<ShoppingAppDbContext>(x => {
 				x.UseSqlServer(builder.Configuration.GetConnectionString("ConString"))
 				.UseLazyLoadingProxies();
@@ -30,7 +36,7 @@ namespace ShoppingApp
 			await Seed.SeedRolesAsync(app);
 			await Seed.SeedAdminAsync(app);
 
-			// Configure the HTTP request pipeline.
+			//Configure the HTTP request pipeline.
 			if (!app.Environment.IsDevelopment())
 			{
 				app.UseExceptionHandler("/Home/Error");

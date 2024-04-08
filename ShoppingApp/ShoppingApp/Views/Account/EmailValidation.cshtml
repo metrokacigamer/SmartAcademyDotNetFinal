@@ -1,0 +1,16 @@
+﻿@model EmailConfirmationViewModel<RegisterViewModel>
+<form asp-controller="Account" asp-action="EmailValidation">
+	<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+	<input type="hidden" asp-for="Model.Email" value="@Model.Model.Email"/>
+	<input type="hidden" asp-for="Model.UserName" value="@Model.Model.UserName" />
+	<input type="hidden" asp-for="Model.Password" value="@Model.Model.Password" />
+	<input type="hidden" asp-for="Model.ConfirmPassword" value="@Model.Model.ConfirmPassword" />
+	<input type="hidden" asp-for="Key" value="@Model.Key" /> @*horrible I know*@
+	<div class="form-group">
+		<label asp-for="EnteredKey">Enter Confirmation Key Send to your Email: </label>
+		<input asp-for="EnteredKey" class="form-control" />
+		<span asp-validation-for="EnteredKey" class="text-danger"></span>
+	</div>
+
+	<button type="submit" class="btn btn-primary">Register</button>
+</form>

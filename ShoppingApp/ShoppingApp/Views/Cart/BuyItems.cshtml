@@ -1,0 +1,26 @@
+﻿@model IEnumerable<ItemViewModel>
+@{
+	var cost = Model.Sum(x => x.Price * x.Quantity);
+}
+<p>Congrats on your purchase!</p>
+<p>Total cost: $@cost</p>
+<div>Bought items</div>
+@foreach(var item in Model)
+{
+	<div>
+		<div>
+			<h2>@item.Name</h2>
+			<p>@item.Description</p>
+			<p>Price: $@item.Price</p>
+			<p>Quantity in Stock: @item.Quantity</p>
+			<p>Category: @item.Category</p>
+			@{
+				var totalItemCost = item.Price * item.Quantity;
+			}
+			<p>Total item cost: $@totalItemCost</p>
+		</div>
+		<div>
+			<a asp-action="GetProduct" asp-controller="Product" asp-route-productId="@item.ProductId">Check Product</a>
+		</div>
+	</div>
+}

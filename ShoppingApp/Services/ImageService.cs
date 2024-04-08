@@ -20,7 +20,7 @@ namespace Services
 			_fileStream = fileStream;
 		}
 
-		public async Task AddImages(IEnumerable<IFormFile> productImages, Product product)
+		public async Task AddImages(IEnumerable<IFormFile> productImages, Product product)//tested
 		{
 			foreach (var imageFile in productImages)
 			{
@@ -43,7 +43,7 @@ namespace Services
 			}
 		}
 
-		public void CheckFile(IFormFile imageFile)
+		public void CheckFile(IFormFile imageFile)//tested
 		{
 			if (imageFile == null)
 			{
@@ -58,15 +58,15 @@ namespace Services
 		}
 		
 
-		public async Task UpdateProductImages(EditProductViewModel model)
+		public async Task UpdateProductImages(EditProductViewModel model)//tested
 		{
-			if (model.NewImages!.Any())
+			if (model.NewImages != null && model.NewImages.Any())
 			{
 				var product = await _repositoryManager.ProductRepository.GetByIdAsync(model.Id);
 				await AddImages(model.NewImages, product);
 			}
 
-			if (model.RemovedImageIds.Any())
+			if (model.RemovedImageIds != null && model.RemovedImageIds.Any())
 			{
 				foreach (var imageId in model.RemovedImageIds)
 				{
@@ -77,7 +77,7 @@ namespace Services
 			}
 		}
 
-		public async Task<IEnumerable<ImageViewModel>> GetImageViewModels(string productId)
+		public async Task<IEnumerable<ImageViewModel>> GetImageViewModels(string productId)//tested
 		{
 			var imageVMs = new List<ImageViewModel>();
 			var product = await _repositoryManager.ProductRepository.GetByIdAsync(productId);

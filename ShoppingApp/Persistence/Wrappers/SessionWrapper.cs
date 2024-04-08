@@ -10,20 +10,21 @@ namespace Persistence.Wrappers
 {
 	public class SessionWrapper : ISessionWrapper
 	{
-		private readonly ISession _session;
+		private readonly IHttpContextAccessor _context;
 
-		public SessionWrapper(ISession session)
+		public SessionWrapper(IHttpContextAccessor session)
 		{
-			_session = session;
+			_context = session;
 		}
+
 		public string GetString(string key)
 		{
-			return _session.GetString(key);
+			return _context.HttpContext.Session.GetString(key);
 		}
 
 		public void SetString(string key, string value)
 		{
-			_session.SetString(key, value);
+			_context.HttpContext.Session.SetString(key, value);
 		}
 	}
 }

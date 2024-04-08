@@ -1,0 +1,91 @@
+﻿@model FilteredPageViewModel
+@{
+	ViewData["Title"] = "Filter";
+	var _currentPage = (int)ViewData["CurrentPage"];
+	var totalPages = (int)ViewData["TotalPages"];
+	var searchString = (string)ViewData["SearchString"];
+	var pageSize = (int)ViewData["PageSize"];
+}
+
+@if (Model.ProductViewModels.DefaultIfEmpty() != default)
+{
+	<div>
+		@{
+			var results = Model.ProductViewModels.Count() == pageSize ? totalPages * pageSize : Model.ProductViewModels.Count();
+		}
+		<div>
+			Found results: @results
+		</div>
+		@foreach (var product in Model.ProductViewModels)
+		{
+			<div>
+				<a asp-action="GetProduct" asp-controller="Product" asp-route-productId="@product.Id">
+					<h2>@product.Name</h2>
+				</a>
+				<p>Price: $@product.Price</p>
+				<p>Category: @product.Category</p>
+				<div>
+					@if (product.Images != null && product.Images.Any())
+					{
+						<div class="image">
+							<a asp-action="GetProduct" asp-controller="Product" asp-route-productId="@product.Id">
+								<img src="@Url.Content(product.Images.First().ImagePath)" />
+							</a>
+						</div>
+					}
+					else
+					{
+						<p>No images attached</p>
+					}
+				</div>
+			</div>
+			<form asp-action="AddToCart" asp-controller="Cart">
+				<p>Add to Cart</p>
+				<input type="hidden" name="productId" value="@product.Id" />
+				<label>Quantity</label>
+				<input type="number" min="0" max="@product.QuantityInStock" name="quantity" />
+				<button type="submit" class="btn btn-secondary">Add To Cart</button>
+			</form>
+		}
+	</div>
+	<span>Pages: </span>
+	@if (_currentPage != 0)
+	{
+		var previousPage = _currentPage - 1;
+		<form asp-action="Filter" asp-controller="Home" style="display: inline">
+			<input type="hidden" asp-for="Filter.PriceLowerBound" value="@Model.Filter.PriceLowerBound" />
+			<input type="hidden" asp-for="Filter.PriceUpperBound" value="@Model.Filter.PriceUpperBound" />
+			<input type="hidden" asp-for="Filter.Category" value="@Model.Filter.Category" />
+			<input type="hidden" asp-for="Filter.SearchString" value="@Model.Filter.SearchString" />
+			<input type="hidden" asp-for="Filter.SortBy" value="@Model.Filter.SortBy" />
+			<input type="hidden" asp-for="Filter.Ascending" value="@Model.Filter.Ascending" />
+
+			<input type="hidden" name="currentPage" value="@previousPage" />
+			<input type="hidden" name="pageSize" value="@pageSize" />
+
+			<button type="submit">@previousPage</button>
+		</form>
+	}
+	<span>@_currentPage</span>
+	@if (totalPages - 1> _currentPage)
+	{
+		var nextPage = _currentPage + 1;
+		<form asp-action="Filter" asp-controller="Home" style="display: inline">
+			<input type="hidden" asp-for="Filter.PriceLowerBound" value="@Model.Filter.PriceLowerBound" />
+			<input type="hidden" asp-for="Filter.PriceUpperBound" value="@Model.Filter.PriceUpperBound" />
+			<input type="hidden" asp-for="Filter.Category" value="@Model.Filter.Category" />
+			<input type="hidden" asp-for="Filter.SearchString" value="@Model.Filter.SearchString" />
+			<input type="hidden" asp-for="Filter.SortBy" value="@Model.Filter.SortBy" />
+			<input type="hidden" asp-for="Filter.Ascending" value="@Model.Filter.Ascending" />
+
+			<input type="hidden" name="currentPage" value="@nextPage" />
+			<input type="hidden" name="pageSize" value="@pageSize" />
+			
+			<button type="submit">@nextPage</button>
+		</form>
+	}
+}
+else
+{
+	<p>No products available yet</p>
+}

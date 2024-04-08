@@ -3,8 +3,10 @@
     ViewData["Title"] = "Error";
 }
 
+<p>Status code 500</p>
 <h1 class="text-danger">Error.</h1>
 <h2 class="text-danger">An error occurred while processing your request.</h2>
+<p>Error encountered: <span>@Model.ErrorMessage</span></p>
 
 @if (Model.ShowRequestId)
 {

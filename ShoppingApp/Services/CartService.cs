@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Service.Abstactions;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 
 namespace Services
@@ -21,7 +22,7 @@ namespace Services
 			_session = session;
 		}
 
-		public async Task<Cart> GetCart()
+		public async Task<Cart> GetCart()//tested
 		{
 			var cartJson = _session.GetString(_key);
 			if (cartJson == null)
@@ -29,10 +30,15 @@ namespace Services
 				return new Cart
 				{
 					Id = Guid.NewGuid().ToString(),
+					Items = new List<Item>(),
 				};
 			}
-
-			var cart = JsonSerializer.Deserialize<Cart>(cartJson);
+			var opt = new JsonSerializerOptions()
+			{
+				ReferenceHandler = ReferenceHandler.Preserve,
+				WriteIndented = true,
+			};
+			var cart = JsonSerializer.Deserialize<Cart>(cartJson, opt);
 			foreach (var item in cart.Items)
 			{
 				item.Product = await _repositoryManager.ProductRepository.GetByIdAsync(item.ProductId);
@@ -42,21 +48,29 @@ namespace Services
 			return cart;
 		}
 
-		public async Task<Cart> GetUserCart(string userId)
+		public async Task<Cart> GetUserCart(string userId)//tested
 		{
 			return (await _repositoryManager.CartRepository.GetAllAsync()).First(x => x.UserId == userId);
 		}
 
 
-		public async Task AddToUserCart(AppUser user, string productId, int quantity)
+		public async Task AddToUserCart(AppUser user, string productId, int quantity)//tested
 		{
 			var product = await _repositoryManager.ProductRepository.GetByIdAsync(productId);
 			CheckQuantity(product, quantity);
 
+			if(user.Cart == null)
+			{
+				_repositoryManager.CartRepository.Create(new Cart
+				{
+					User = user
+				});
+			}
+
 			var cartId = user.Cart.Id;
 			var cart = await _repositoryManager.CartRepository.GetByIdAsync(cartId);
 
-			if (cart.Items.Any(x => x.ProductId == productId))
+			if (cart.Items != null && cart.Items.Any(x => x.ProductId == productId))
 			{
 				var item = cart.Items.First(x => x.ProductId == productId);
 				item = UpdateQuantity(cart, product, quantity + item.Quantity);
@@ -74,7 +88,7 @@ namespace Services
 			}
 		}
 
-		public Item UpdateQuantity(Cart cart, Product product, int quantity)
+		public Item UpdateQuantity(Cart cart, Product product, int quantity)//tested
 		{
 			CheckQuantity(product, quantity);
 
@@ -85,7 +99,7 @@ namespace Services
 			return item;
 		}
 
-		public async Task CheckQuantity(Product product, int quantity)
+		public void CheckQuantity(Product product, int quantity)//tested
 		{
 			if (product.QuantityInStock < quantity)
 			{
@@ -93,7 +107,7 @@ namespace Services
 			}
 		}
 
-		public async Task AddToGuestCart(string productId, int quantity)
+		public async Task AddToGuestCart(string productId, int quantity)//tested
 		{
 			var product = await _repositoryManager.ProductRepository.GetByIdAsync(productId);
 			CheckQuantity(product, quantity);
@@ -102,12 +116,14 @@ namespace Services
 
 			if (cart.Items!.Any(x => x.ProductId == productId))
 			{
-				UpdateQuantity(cart, product, quantity);
+				var item = cart.Items.First(x => x.ProductId == productId);
+				UpdateQuantity(cart, product, quantity + item.Quantity);//tested
 			}
 			else
 			{
-				cart.Items!.Append(new Item
+				cart.Items = cart.Items!.Append(new Item
 				{
+					Id = Guid.NewGuid().ToString(),
 					Product = await _repositoryManager.ProductRepository.GetByIdAsync(productId),
 					ProductId = product.Id,
 					Cart = cart,
@@ -119,13 +135,18 @@ namespace Services
 			SaveCart(cart);
 		}
 
-		public void SaveCart(Cart cart)
+		public void SaveCart(Cart cart)//tested
 		{
-			var cartString = JsonSerializer.Serialize(cart);
+			var opt = new JsonSerializerOptions()
+			{
+				ReferenceHandler = ReferenceHandler.Preserve,
+				WriteIndented = true,
+			};
+			var cartString = JsonSerializer.Serialize(cart, opt);
 			_session.SetString(_key, cartString);
 		}
 
-		public async Task<IEnumerable<Item>> BuyGuestCart()
+		public async Task<IEnumerable<Item>> BuyGuestCart()//tested
 		{
 			var cart = await GetCart();
 			var items = new List<Item>(cart.Items);
@@ -137,7 +158,7 @@ namespace Services
 			return items;
 		}
 
-		public async Task RemoveItemFromGuestCart(string itemId)
+		public async Task RemoveItemFromGuestCart(string itemId)//testesd
 		{
 			var cart = await GetCart();
 			var tempList = cart.Items.ToList();
@@ -147,7 +168,7 @@ namespace Services
 			SaveCart(cart);
 		}
 
-		public async Task ChangeGuestCartItemQuantity(string itemId, int newQuantity)
+		public async Task ChangeGuestCartItemQuantity(string itemId, int newQuantity)//tested
 		{
 			var cart = await GetCart();
 			var productId = cart.Items.FirstOrDefault(x => x.Id == itemId).ProductId;
@@ -158,7 +179,7 @@ namespace Services
 			SaveCart(cart);
 		}
 
-		public async Task ChangeItemQuantity(string itemId, int newQuantity)
+		public async Task ChangeItemQuantity(string itemId, int newQuantity)//tested
 		{
 			var item = await _repositoryManager.ItemRepository.GetByIdAsync(itemId);
 

@@ -153,7 +153,7 @@ namespace Services.Tests
 
 			//Act
 			await _cartService.AddToUserCart(user, product.Id, 1);
-			await _cartService.AddToUserCart(user, product.Id, 3);
+			await _cartService.AddToUserCart(user, product.Id, 2);
 
 			//Assert
 			_repositoryManagerMock.Verify(x => x.ItemRepository, Times.Exactly(2));
@@ -215,7 +215,7 @@ namespace Services.Tests
 
 			//Act
 			await _cartService.AddToGuestCart(product.Id, 1);
-			await _cartService.AddToGuestCart(product.Id, 3);
+			await _cartService.AddToGuestCart(product.Id, 2);
 
 			//Assert
 			_sessionMock.Verify(x => x.SetString(It.IsAny<string>(), It.IsAny<string>()), Times.AtLeast(2));
@@ -266,7 +266,7 @@ namespace Services.Tests
 		}
 
 		[Test]
-		public async Task ChangeGuestCartItemQuantity_Test_Works()
+		public async Task ChangeGuestCartItemQuantity_PassedValidQuantity_CallsSetString()
 		{
 			//Arrange
 			var product = new Product
@@ -294,7 +294,7 @@ namespace Services.Tests
 			_productRepositoryMock.Setup(x => x.GetByIdAsync(product.Id)).ReturnsAsync(product);
 
 			//Act
-			await _cartService.ChangeGuestCartItemQuantity(cart.Items.First().Id, 3);
+			await _cartService.ChangeGuestCartItemQuantity(cart.Items.First().Id, 2);
 
 			//Assert
 			_sessionMock.Verify(x => x.SetString(It.IsAny<string>(), It.IsAny<string>()), Times.AtLeastOnce);
@@ -302,7 +302,7 @@ namespace Services.Tests
 		}
 
 		[Test]
-		public async Task ChangeItemQuantity_Test_Works()
+		public async Task ChangeItemQuantity_PassedValidQuantity_UpdatesItem()
 		{
 			//Arrange
 			var product = new Product

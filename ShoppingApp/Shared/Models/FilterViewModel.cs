@@ -13,5 +13,7 @@ namespace Shared.Models
 		public Category Category { get; set; }
 		public double PriceLowerBound { get; set; }
 		public double PriceUpperBound { get; set; }
-	}
+		public string SortBy { get; set; } = "Price";
+        public bool Ascending { get; set; } = false;
+    }
 }

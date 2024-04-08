@@ -32,7 +32,11 @@ namespace Services
 			var user = await _userManager.FindByNameAsync(model.UserName);
 			if (user != null) 
 			{
-				await _signInManager.SignInAsync(user, isPersistent: false, model.UserName);
+				var res = await _signInManager.PasswordSignInAsync(user, model.Password, false, false);
+				if (!res.Succeeded)
+				{
+					throw new LoginFailedException("Incorrect Password");
+				}
 			}
 			else
 			{
@@ -55,6 +59,10 @@ namespace Services
 			{
 				await _userManager.AddToRoleAsync(user, "Guest");
 				await _signInManager.SignInAsync(user, false);
+				_repositoryManager.CartRepository.Create(new Cart
+				{
+					User = user
+				});
 			}
 			else
 			{

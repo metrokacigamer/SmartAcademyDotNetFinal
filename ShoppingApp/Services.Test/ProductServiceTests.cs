@@ -34,7 +34,7 @@ namespace Services.Test
 			//Arrange
 			var model = new AddProductViewModel
 			{
-				Category = Category.Other.ToString(),
+				Category = Category.Other,
 				Description = "testDescription",
 				Name = "Test",
 				Price = 10.0,
@@ -42,7 +42,7 @@ namespace Services.Test
 			};
 			var product = new Product
 			{
-				Category = (Category)Enum.Parse(typeof(Category), model.Category),
+				Category = model.Category,
 				Name = model.Name,
 				Price = model.Price,
 				Description = model.Description,
@@ -216,10 +216,12 @@ namespace Services.Test
 				},
 				Filter = filter,
 			};
+			var currentPage = 0;
+			var pagesize = 10;
 			_productRepositoryMock.Setup(x => x.GetAllAsync()).ReturnsAsync(products);
 
 			//Act
-			var result = await _productService.Filter(filter);
+			var result = await _productService.Filter(filter, currentPage, pagesize);
 			var resultJson = JsonSerializer.Serialize(result);
 			var expectedJson = JsonSerializer.Serialize(expected);
 
@@ -282,10 +284,12 @@ namespace Services.Test
 				},
 				Filter = filter,
 			};
+			var currentPage = 0;
+			var pagesize = 10;
 			_productRepositoryMock.Setup(x => x.GetAllAsync()).ReturnsAsync(products);
 
 			//Act
-			var result = await _productService.Filter(filter);
+			var result = await _productService.Filter(filter, currentPage, pagesize);
 			var resultJson = JsonSerializer.Serialize(result);
 			var expectedJson = JsonSerializer.Serialize(expected);
 
@@ -354,10 +358,12 @@ namespace Services.Test
 				},
 				Filter = filter,
 			};
+			var currentPage = 0;
+			var pagesize = 10;
 			_productRepositoryMock.Setup(x => x.GetAllAsync()).ReturnsAsync(products);
 
 			//Act
-			var result = await _productService.Filter(filter);
+			var result = await _productService.Filter(filter, currentPage, pagesize);
 			var resultJson = JsonSerializer.Serialize(result);
 			var expectedJson = JsonSerializer.Serialize(expected);
 

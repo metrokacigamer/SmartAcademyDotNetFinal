@@ -10,7 +10,7 @@ namespace Service.Abstactions
 {
 	public interface IItemService
 	{
-		void BuyUserCartItems(IEnumerable<Item>? items);
+		Task BuyUserCartItems(IEnumerable<Item>? items);
 		IEnumerable<ItemViewModel> GetItemViewModels(IEnumerable<Item> items);
 		Task RemoveItem(string itemId);
 	}

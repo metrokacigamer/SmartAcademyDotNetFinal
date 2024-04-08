@@ -27,11 +27,11 @@ namespace Presentation.Controllers
 				var userId = _serviceManager.AccountService.GetCurrentUserId(User);
 				var user = await _serviceManager.AccountService.GetById(userId);
 
-				_serviceManager.CartService.AddToUserCart(user, productId, quantity);
+				await _serviceManager.CartService.AddToUserCart(user, productId, quantity);
 			}
 			else
 			{
-				_serviceManager.CartService.AddToGuestCart(productId, quantity);
+				await _serviceManager.CartService.AddToGuestCart(productId, quantity);
 			}
 			return RedirectToAction("Index", "Home");
 		}
@@ -48,7 +48,7 @@ namespace Presentation.Controllers
 				itemVMs = _serviceManager.ItemService.GetItemViewModels(user.Cart.Items).ToList();
 
 				_serviceManager.ProductService.AdjustQuantity(user.Cart.Items);
-				_serviceManager.ItemService.BuyUserCartItems(user.Cart.Items);
+				await _serviceManager.ItemService.BuyUserCartItems(user.Cart.Items);
 			}
 			else
 			{
@@ -61,30 +61,30 @@ namespace Presentation.Controllers
 		}
 
 		[HttpPost]
-		public IActionResult RemoveCartItem(string itemId)
+		public async Task<IActionResult> RemoveCartItem(string itemId)
 		{
 			if (!User.Identity.IsAuthenticated)
 			{
-				_serviceManager.CartService.RemoveItemFromGuestCart(itemId);
+				await _serviceManager.CartService.RemoveItemFromGuestCart(itemId);
 			}
 			else
 			{
-				_serviceManager.ItemService.RemoveItem(itemId);
+				await _serviceManager.ItemService.RemoveItem(itemId);
 			}
 
-			return RedirectToAction("CartItems", "Cart");
+			return RedirectToAction("GetCartItems", "Cart");
 		}
 
 		[HttpPost]
-		public IActionResult ChangeQuantity(string itemId, int newQuantity)
+		public async Task<IActionResult> ChangeQuantity(string itemId, int newQuantity)
 		{
 			if (!User.Identity.IsAuthenticated)
 			{
-				_serviceManager.CartService.ChangeGuestCartItemQuantity(itemId, newQuantity);
+				await _serviceManager.CartService.ChangeGuestCartItemQuantity(itemId, newQuantity);
 			}
 			else
 			{
-				_serviceManager.CartService.ChangeItemQuantity(itemId, newQuantity);
+				await _serviceManager.CartService.ChangeItemQuantity(itemId, newQuantity);
 			}
 
 			return RedirectToAction("GetCartItems", "Cart");
