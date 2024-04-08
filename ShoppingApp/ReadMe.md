@@ -27,11 +27,76 @@ In `ShoppingApp/Core/Services/`, add the item `EmailSenderService.cs` that imple
 
 ```csharp
 
-// EmailSenderService.cs
 internal class EmailSenderService : IEmailSenderService
-{
-    // Constructor and methods go here...
-}
+	{
+		private readonly IRepositoryManager _repositoryManager;
+		private readonly ISessionWrapper _session;
+		private readonly ISmtpClientWrapper _smtpClient;
+
+		public EmailSenderService(ISessionWrapper session, IRepositoryManager repositoryManager, ISmtpClientWrapper smtpClient)
+		{
+			_session = session;
+			_repositoryManager = repositoryManager;
+			_smtpClient = smtpClient;
+		}
+
+		public async Task SendEmailAsync(string email, string subject, string body)
+		{
+			var mail = "use your email for email sending service";
+			var pw = "app password of your email";
+			var client = new SmtpClient("smtp.Gmail.com")
+			{
+				Port = 587,
+				EnableSsl = true,
+				Credentials = new NetworkCredential(mail, pw),
+			};
+
+			await _smtpClient.SendMailAsync(client, new MailMessage(
+														from: mail,
+														to: email,
+														subject,
+														body
+														));
+		}
+
+		public async Task<string> SendConfirmationKey(string email, string subject)
+		{
+			var key = Guid.NewGuid().ToString();
+			var message = $"Confirmation key: {key}";
+
+			await SendEmailAsync(email, subject, message);
+
+			return key;
+		}
+
+		public async Task<EmailConfirmationViewModel<RegisterViewModel>> SendRegisterConfirmationEmail(RegisterViewModel model)
+		{
+			var key = await SendConfirmationKey(model.Email, "Register confirmation");
+
+			return new EmailConfirmationViewModel<RegisterViewModel> { Key = key, Model = model };
+		}
+
+		public async Task<EmailConfirmationViewModel<ChangeUserNameViewModel>> SendNameChangeConfirmationEmail(ChangeUserNameViewModel model)
+		{
+			var key = await SendConfirmationKey(model.Email, "Name Change confirmation");
+
+			return new EmailConfirmationViewModel<ChangeUserNameViewModel> { Key = key, Model = model };
+		}
+
+		public async Task<EmailConfirmationViewModel<ChangeEmailViewModel>> SendEmailRemovalConfirmationEmail(ChangeEmailViewModel model)
+		{
+			var key = await SendConfirmationKey(model.Email, "Email Change confirmation");
+
+			return new EmailConfirmationViewModel<ChangeEmailViewModel> { Key = key, Model = model };
+		}
+
+		public async Task<EmailConfirmationViewModel<ChangeEmailViewModel>> SendEmailChangeConfirmationEmail(ChangeEmailViewModel model)
+		{
+			var key = await SendConfirmationKey(model.NewEmail, "Email Change confirmation");
+
+			return new EmailConfirmationViewModel<ChangeEmailViewModel> { Key = key, Model = model };
+		}
+	}
 ```
 Don't forget to add your email for email sending service. For Gmail, you'll need to set up two-factor authentication and generate an app password. Use this password in the SendEmailAsync method.
 
