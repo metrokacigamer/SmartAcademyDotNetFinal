@@ -16,7 +16,7 @@ namespace Services
 			_repositoryManager = repositoryManager;
 		}
 
-S		public async Task<Product> AddProduct(AddProductViewModel model)//tested
+		public async Task<Product> AddProduct(AddProductViewModel model)//tested
 		{
 			var productExists = (await _repositoryManager.ProductRepository.GetAllAsync()).Any(x => x.Name == model.Name);
 			if (productExists)
