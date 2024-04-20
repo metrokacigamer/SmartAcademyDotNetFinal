@@ -16,6 +16,10 @@
   }
 }
 ````
+In "ConString" field enter names for your server and database:
+````
+	"ConString": "Server=SERVER-SERVER;Database=DBNAME;
+````
 # Add a folder named images in ShoppingApp/ShoppingApp/wwwroot/.
 
 In `Seed.cs`, remember to fill in the email with the actual email. Your administrator user account details are:
@@ -109,6 +113,8 @@ public async Task SendEmailAsync(string email, string subject, string body)
     // SmtpClient setup...
 }
 ```
+
+Finally, run the migration, update the database, compile the solution and you are ready to run the web-application.
 # Application Overview
 
 The application is a Shopping website project written in ASP.NET Core MVC, utilizing Onion architecture, Repository pattern, unit testing, and integration testing. Here's an overview:

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Presentation.Controllers;
+using Shared.Models;
 
 namespace ShoppingApp
 {
@@ -51,9 +52,8 @@ namespace ShoppingApp
 
 						break;
 					}
-				case UserNotFoundException:
+				case UserNotFoundException _ex:
 					{
-                        var _ex = ex as UserNotFoundException;
                         var ModelState = context.Features.Get<ModelStateFeature>()?.ModelState;
 
                         ModelState.AddModelError(string.Empty, _ex.Message);
@@ -73,9 +73,6 @@ namespace ShoppingApp
 					}
 				default:
 					{
-						//var controller = (HomeController)_serviceProvider.GetService(typeof(HomeController));
-						//var result = controller.Error(ex);
-						//await result.ExecuteResultAsync(new ActionContext { HttpContext = context });
 						context.Response.Redirect("/Home/Error");
 
 						break;

@@ -25,7 +25,8 @@ namespace Services.Tests
 			_repositoryManagerMock = new Mock<IRepositoryManager>();
 			_userManagerMock = new Mock<UserManager<AppUser>>(Mock.Of<IUserStore<AppUser>>(), null, null, null, null, null, null, null, null);
 			_roleManagerMock = new Mock<RoleManager<IdentityRole>>(Mock.Of<IRoleStore<IdentityRole>>(), null, null, null, null);
-			_signInManagerMock = new Mock<SignInManager<AppUser>>(_userManagerMock.Object, Mock.Of<IHttpContextAccessor>(), Mock.Of<IUserClaimsPrincipalFactory<AppUser>>(), null, null, null);
+			_signInManagerMock = new Mock<SignInManager<AppUser>>(
+				_userManagerMock.Object, Mock.Of<IHttpContextAccessor>(), Mock.Of<IUserClaimsPrincipalFactory<AppUser>>(), null, null, null);
 			_cartRepositoryMock = new Mock<IRepository<Cart>>();
 			_repositoryManagerMock.Setup(x => x.CartRepository).Returns(_cartRepositoryMock.Object);
 
