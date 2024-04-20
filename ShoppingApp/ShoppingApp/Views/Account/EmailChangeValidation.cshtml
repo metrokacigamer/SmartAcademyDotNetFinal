@@ -1,0 +1,17 @@
+﻿@model EmailConfirmationViewModel<ChangeEmailViewModel>
+<form asp-controller="Account" asp-action="EmailChangeValidation">
+	<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+	<input type="hidden" asp-for="Model.Email" value="@Model.Model.Email" />
+	<input type="hidden" asp-for="Model.NewEmail" value="@Model.Model.NewEmail" />
+	<input type="hidden" asp-for="Model.ConfirmNewEmail" value="@Model.Model.ConfirmNewEmail" />
+	<input type="hidden" asp-for="Model.Id" value="@Model.Model.Id" />
+	<input type="hidden" asp-for="Key" value="@Model.Key" /> @*horrible I know*@
+	<div class="form-group">
+		<label asp-for="EnteredKey">Enter Confirmation Key Sent to your new Email: </label>
+		<input asp-for="EnteredKey" class="form-control" />
+		<span asp-validation-for="EnteredKey" class="text-danger"></span>
+	</div>
+
+	<button type="submit" class="btn btn-primary">Update Email</button>
+</form>
+

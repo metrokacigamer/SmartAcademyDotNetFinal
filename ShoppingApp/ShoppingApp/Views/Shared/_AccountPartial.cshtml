@@ -1,0 +1,32 @@
+﻿@using Domain.Entities
+﻿@using Microsoft.AspNetCore.Identity;
+@inject SignInManager<AppUser> _signInManager
+
+<ul class="navbar-nav">
+	@if (_signInManager.IsSignedIn(User))
+	{
+		<li class="nav-item dropdown">
+			<a class="nav-link dropdown-toggle" href="#" id="navbar-dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+				@User.Identity?.Name
+			</a>
+			<ul class="dropdown-menu left-navbar" aria-labelledby="navbar-dropdown" style="padding: 0">
+				<li>
+					<a class="dropdown-item" asp-controller="Account" asp-action="GetProfileSettings">
+						Edit Profile Settings
+					</a>
+				</li>
+				<li>
+					<a class="dropdown-item" asp-controller="Account" asp-action="LogOut">
+						Log out
+					</a>
+				</li>
+			</ul>
+		</li>
+	}
+</ul>
+<style>
+	.left-navbar {
+		left: auto !important;
+		right: 0;
+	}
+</style>

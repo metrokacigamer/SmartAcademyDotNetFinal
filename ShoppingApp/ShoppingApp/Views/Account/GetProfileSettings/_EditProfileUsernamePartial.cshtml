@@ -1,0 +1,17 @@
+﻿@model UserSettingsViewModel
+﻿
+<fieldset style="border: solid; border-width: 1px; border-radius: 5px; max-width: 576px">
+	<ul style="margin-top: 10px;">
+		<li class="list-group" style="margin-bottom: 20px;">
+			<div>
+				<span class="justify-content-between d-flex" style="padding-right: 10px; ">
+					<span style="padding-top: 5px;">Username: @Model.UserName</span>
+					<a class="btn btn-outline-secondary" href="@Url.Action(Model.ActionName, new { userId = Model.Id })">
+						Change Username
+					</a>
+				</span>
+			</div>
+		</li>
+		<li class="list-group"><span>Id: @Model.Id</span></li>
+	</ul>
+</fieldset>

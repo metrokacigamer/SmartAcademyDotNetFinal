@@ -1,0 +1,42 @@
+﻿@model AddProductViewModel
+<form asp-controller="Product" asp-action="AddProduct" enctype="multipart/form-data">
+	<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+	<div class="form-group">
+		<label asp-for="Name">Name </label>
+		<input asp-for="Name" class="form-control" />
+		<span asp-validation-for="Name" class="text-danger"></span>
+	</div>
+	<div class="form-group">
+		<label asp-for="Description">Description </label>
+		<input asp-for="Description" class="form-control" />
+		<span asp-validation-for="Description" class="text-danger"></span>
+	</div>
+	<div>
+		<select class="input-group" asp-for="Category">
+			<option value="">choose the category</option>
+			<option value="AllInOnePCs">All In One PCs</option>
+			<option value="ComputerParts">Computer Parts</option>
+			<option value="Monitors">Monitors</option>
+			<option value="Keyboards">Keyboards</option>
+			<option value="Mouses">Mouses</option>
+			<option value="Headsets">Headsets</option>
+			<option value="Other">Other</option>
+		</select>
+	</div>
+	<div class="form-group">
+		<label asp-for="Price">Price </label>
+		<input asp-for="Price" class="form-control" />
+		<span asp-validation-for="Price" class="text-danger"></span>
+	</div>
+	<div class="form-group">
+		<label asp-for="QuantityInStock">Quantity in stock </label>
+		<input asp-for="QuantityInStock" class="form-control" />
+		<span asp-validation-for="QuantityInStock" class="text-danger"></span>
+	</div>
+	<div class="form-group">
+		<label asp-for="ProductImages">ProductImages </label>
+		<input type="file" id="ProductImages" name="ProductImages" class="form-control" multiple />
+		<span asp-validation-for="ProductImages" class="text-danger"></span>
+	</div>
+	<button type="submit" class="btn btn-primary">Add Product</button>
+</form>

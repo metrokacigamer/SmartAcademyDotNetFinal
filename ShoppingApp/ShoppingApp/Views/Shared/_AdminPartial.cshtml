@@ -1,0 +1,8 @@
+﻿@* ADD ITEM *@
+
+@if (User.IsInRole("Admin"))
+{
+    <li class="nav-item" style="margin-right: 0; margin-left: auto;">
+        <a class="nav-link text-dark" asp-area="" asp-controller="Product" asp-action="AddProduct">Add product</a>
+    </li>
+}

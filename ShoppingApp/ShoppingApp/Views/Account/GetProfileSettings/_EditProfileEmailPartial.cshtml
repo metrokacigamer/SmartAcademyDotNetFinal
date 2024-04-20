@@ -1,0 +1,14 @@
+﻿@model UserSettingsViewModel
+
+<fieldset style="padding-left: 20px; padding-right: 20px;border: solid; border-width: 1px; border-radius: 5px; max-width: 576px;">
+	<div style=" margin-top: 20px; margin-bottom: 20px;" class="text-center">
+		<div>
+			<span class="justify-content-between d-flex" style="padding-right: 10px; ">
+				<span style="padding-top: 5px;">Email: @Model.Email</span>
+				<a class="btn btn-outline-secondary" asp-action="@Model.ActionName" asp-controller="Account" asp-route-userId="@Model.Id" >
+					Change Email
+				</a>
+			</span>
+		</div>
+	</div>
+</fieldset>

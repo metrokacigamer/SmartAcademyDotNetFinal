@@ -1,0 +1,109 @@
+﻿@model EditProductViewModel
+<form asp-controller="Product" asp-action="EditProduct" enctype="multipart/form-data">
+	<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+	<input type="hidden" asp-for="Id" value="@Model.Id" />
+	<div class="form-group">
+		<label asp-for="Name">Name </label>
+		<input asp-for="Name" class="form-control" />
+		<span asp-validation-for="Name" class="text-danger"></span>
+	</div>
+	<div class="form-group">
+		<label asp-for="Description">Description </label>
+		<input asp-for="Description" class="form-control" />
+		<span asp-validation-for="Description" class="text-danger"></span>
+	</div>
+	<div>
+		<select class="input-group" asp-for="Category">
+			<option value="">choose the category</option>
+			<option value="AllInOnePCs">All In One PCs</option>
+			<option value="ComputerParts">Computer Parts</option>
+			<option value="Monitors">Monitors</option>
+			<option value="Keyboards">Keyboards</option>
+			<option value="Mouses">Mouses</option>
+			<option value="Headsets">Headsets</option>
+			<option value="Other">Other</option>
+		</select>
+	</div>
+	<div class="form-group">
+		<label asp-for="Price">Price </label>
+		<input asp-for="Price" class="form-control" />
+		<span asp-validation-for="Price" class="text-danger"></span>
+	</div>
+	<div class="form-group">
+		<label asp-for="QuantityInStock">Quantity in stock </label>
+		<input asp-for="QuantityInStock" class="form-control" />
+		<span asp-validation-for="QuantityInStock" class="text-danger"></span>
+	</div>
+	<div class="form-group">
+		<label asp-for="NewImages">Upload new Images </label>
+		<input type="file" asp-for="NewImages" class="form-control" multiple />
+		<span asp-validation-for="NewImages" class="text-danger"></span>
+	</div>
+	<div class="form-group">
+		<label asp-for="RemovedImageIds">Images</label>
+		<div class="images">
+			@if (Model.Images != null && Model.Images.Any())
+			{
+				@foreach (var image in Model.Images)
+				{
+					<div class="image-item">
+						<img src="@Url.Content(image.ImagePath)" />
+						<a href="#" class="remove-image" data-image-id="@image.Id">Remove Image</a>
+					</div>
+				}
+			}
+			else
+			{
+				<p>No images attached</p>
+			}
+		</div>
+		<input type="hidden" name="RemovedImageIds" class="form-control" multiple />
+		<span asp-validation-for="RemovedImageIds" class="text-danger"></span>
+	</div>
+
+	<button type="submit" class="btn btn-primary">Update Product</button>
+</form>
+
+<style>
+	.images .image-item img{
+		margin-left: 0;
+		max-height: 400px;
+		object-fit: scale-down;
+	}
+</style>
+
+@section scripts {
+	<script>
+		$(document).ready(function () {
+			$(".remove-image").click(function (e) {
+				e.preventDefault();
+				var imageId = $(this).data("image-id");
+				var removedImageIdsInput = $("input[name='RemovedImageIds']");
+				var removedImageIds = removedImageIdsInput.val() ? JSON.parse(removedImageIdsInput.val()) : [];
+				if (imageId !== null && imageId !== undefined && imageId !== "") {
+					removedImageIds.push(imageId);
+					removedImageIdsInput.val(JSON.stringify(removedImageIds));
+				}
+				$(this).closest('.image-item').remove();
+			});
+
+			$("form").submit(function (e) {
+				var removedImageIdsInput = $("input[name='RemovedImageIds']");
+				if (!removedImageIdsInput.val()) {
+					removedImageIdsInput.remove(); // Remove the input if no images were removed
+				} else {
+					// Remove the original RemovedImageIds input field
+					removedImageIdsInput.remove();
+					// Create a hidden input for each removed image ID
+					var removedImageIds = JSON.parse(removedImageIdsInput.val());
+					removedImageIds.forEach(function (imageId) {
+						$('<input />').attr('type', 'hidden')
+							.attr('name', 'RemovedImageIds')
+							.attr('value', imageId)
+							.appendTo('form');
+					});
+				}
+			});
+		});
+	</script>
+}
