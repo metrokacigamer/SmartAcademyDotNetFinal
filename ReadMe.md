@@ -56,11 +56,11 @@ internal class EmailSenderService : IEmailSenderService
 			};
 
 			await _smtpClient.SendMailAsync(client, new MailMessage(
-														from: mail,
-														to: email,
-														subject,
-														body
-														));
+								from: mail,
+								to: email,
+								subject,
+								body
+								));
 		}
 
 		public async Task<string> SendConfirmationKey(string email, string subject)
