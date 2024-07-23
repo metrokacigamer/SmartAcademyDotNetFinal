@@ -1,0 +1,22 @@
+﻿@model ChangeEmailViewModel
+
+<form asp-action="ChangeEmail" asp-controller="Account">
+	<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+	<input type="hidden" asp-for="Id" value="@Model.Id" />
+	<div class="form-group mb-1">
+		<label asp-for="Email">Enter Current Email </label>
+		<input asp-for="Email" class="form-control" />
+		<span asp-validation-for="Email" class="text-danger"></span>
+	</div>
+	<div class="form-group mb-1">
+		<label asp-for="NewEmail">Enter New Email </label>
+		<input asp-for="NewEmail" class="form-control" />
+		<span asp-validation-for="NewEmail" class="text-danger"></span>
+	</div>
+	<div class="form-group mb-1">
+		<label asp-for="ConfirmNewEmail">Confirm New Email </label>
+		<input asp-for="ConfirmNewEmail" class="form-control" />
+		<span asp-validation-for="ConfirmNewEmail" class="text-danger"></span>
+	</div>
+	<button type="submit">Change Email</button>
+</form>

@@ -1,0 +1,14 @@
+﻿@model EmailConfirmationViewModel<ChangeUserNameViewModel>
+<form asp-controller="Account" asp-action="NameChangeValidation">
+	<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+	<input type="hidden" asp-for="Key"/> @*horrible I know*@
+	<input type="hidden" asp-for="Model.Email"/>
+	<input type="hidden" asp-for="Model.Id"/>
+	<input type="hidden" asp-for="Model.NewUserName"/>
+	<div class="form-group">
+		<label asp-for="EnteredKey">Enter Name Change Confirmation Key Sent to your Email: </label>
+ 		<input asp-for="EnteredKey" class="form-control" />
+ 		<span asp-validation-for="EnteredKey" class="text-danger"></span>
+	</div>
+	<button type="submit" class="btn btn-primary">Submit</button>
+</form>

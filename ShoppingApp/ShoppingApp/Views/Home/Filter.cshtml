@@ -1,0 +1,56 @@
+﻿@model FilterViewModel
+<form asp-action="Filter" asp-controller="Home">
+	<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+	<div class="form-group">
+		<label asp-for="SearchString">Enter search string </label>
+		<input asp-for="SearchString" class="form-control" />
+		<span asp-validation-for="SearchString" class="text-danger"></span>
+	</div>
+	<div>Enter price range</div>
+	<div class="form-group">
+		<label asp-for="PriceLowerBound">Lower bound</label>
+		<input asp-for="PriceLowerBound" class="form-control" />
+		<span asp-validation-for="PriceLowerBound" class="text-danger"></span>
+	</div>
+	<div class="form-group">
+		<label asp-for="PriceUpperBound">Upper bound</label>
+		<input asp-for="PriceUpperBound" class="form-control" />
+		<span asp-validation-for="PriceUpperBound" class="text-danger"></span>
+	</div>
+	<div class="form-group">
+		<label asp-for="Category">Category</label>
+		<select asp-for="Category">
+			<option value="">choose the category</option>
+			<option value="AllInOnePCs">All In One PCs</option>
+			<option value="ComputerParts">Computer Parts</option>
+			<option value="Monitors">Monitors</option>
+			<option value="Keyboards">Keyboards</option>
+			<option value="Mouses">Mouses</option>
+			<option value="Headsets">Headsets</option>
+			<option value="Other">Other</option>
+		</select>
+		<span asp-validation-for="Category" class="text-danger"></span>
+	</div>
+	<div>
+		<p>Sort By</p>
+		<div class="form-group">
+			<label asp-for="SortBy">Sort By</label>
+			<select asp-for="SortBy">
+				<option value="">choose the sorting option</option>
+				<option value="Price">Price</option>
+				<option value="Name">Name</option>
+				<option value="Category">Category</option>
+			</select>
+			<span asp-validation-for="Category" class="text-danger"></span>
+		</div>
+		<div class="form-group">
+			<label>Ascending</label>
+			<div>
+				<label><input type="radio" asp-for="Ascending" value="true" /> True</label>
+				<label><input type="radio" asp-for="Ascending" value="false" /> False</label>
+			</div>
+			<span asp-validation-for="Ascending" class="text-danger"></span>
+		</div>
+	</div>
+	<button type="submit" class="btn btn-primary" >Filter</button>
+</form>
